@@ -89,8 +89,8 @@ const Title = (props: Props) => {
                 onClick={() => setIsActive(!isActive)}
             />
             <div>
-                <p>x: {orientation.x}</p>
-                <p>y: {orientation.y}</p>
+                <p>x: {orientation.x.toFixed(4)}</p>
+                <p>y: {orientation.y.toFixed(4)}</p>
             </div>
         </animated.div>
     )
