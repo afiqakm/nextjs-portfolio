@@ -1,6 +1,6 @@
 
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import { useGesture, useHover, useMove } from "@use-gesture/react";
 import Icons from '../../assets/icons';
@@ -13,11 +13,37 @@ const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
 
 const Title = (props: Props) => {
     const [isActive, setIsActive] = useState(false);
+    const [orientation, setOrientation] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleOrientationEvent = (event: DeviceOrientationEvent) => {
+            handleOrientation(event);
+        };
+
+        window.addEventListener("deviceorientation", handleOrientationEvent);
+        return () => {
+            window.removeEventListener("deviceorientation", handleOrientationEvent);
+        };
+    }, []);
+
+    const handleOrientation = (event: DeviceOrientationEvent) => {
+        let x = event.beta; // In degree in the range [-180,180)
+        let y = event.gamma; // In degree in the range [-90,90)
+
+        if (x && y) {
+            // Normalize the values to fit within a range that matches your mouse pointer calculations
+            x = x / 2; // Adjusting the scale for better matching
+            y = y / 2; // Adjusting the scale for better matching
+
+            setOrientation({ x, y });
+        }
+
+    }
 
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
         () => ({
-            rotateX: 0,
-            rotateY: 0,
+            rotateX: isActive ? orientation.x : 0,
+            rotateY: isActive ? orientation.y : 0,
             rotateZ: 0,
             scale: 1,
             zoom: 0,
@@ -44,12 +70,13 @@ const Title = (props: Props) => {
         },
     )
 
+
     return (
         <animated.div
             {...bind()}
-            className='flex justify-center items-center w-[700px] h-[700px]'
+            className='flex justify-center items-center w-[800px] h-[800px] flex-col gap-5'
             style={{
-                transform: isActive ? '' : 'perspective(600px)',
+                transform: isActive ? '' : 'perspective(800px)',
                 rotateX,
                 rotateY,
                 rotateZ,
@@ -61,6 +88,10 @@ const Title = (props: Props) => {
                 className="w-[300px] h-[300px] object-contain cursor-pointer"
                 onClick={() => setIsActive(!isActive)}
             />
+            <div>
+                <p>x: {orientation.x}</p>
+                <p>y: {orientation.y}</p>
+            </div>
         </animated.div>
     )
 };
