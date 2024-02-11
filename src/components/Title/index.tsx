@@ -14,6 +14,7 @@ const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
 const Title = (props: Props) => {
     const [isActive, setIsActive] = useState(false);
     const [orientation, setOrientation] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+    const [mousePosition, setMousePosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
 
     useEffect(() => {
         const handleOrientationEvent = (event: DeviceOrientationEvent) => {
@@ -42,8 +43,8 @@ const Title = (props: Props) => {
 
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
         () => ({
-            rotateX: isActive ? orientation.x : 0,
-            rotateY: isActive ? orientation.y : 0,
+            rotateX: 0,
+            rotateY: 0,
             rotateZ: 0,
             scale: 1,
             zoom: 0,
@@ -60,6 +61,7 @@ const Title = (props: Props) => {
                     rotateX: calcX(py, y.get()),
                     rotateY: calcY(px, x.get()),
                 })
+                setMousePosition({ x: calcX(py, y.get()), y: calcY(px, x.get()) })
             },
             onHover: ({ hovering }) => {
                 (!isActive && !hovering) && api({
@@ -76,10 +78,10 @@ const Title = (props: Props) => {
             {...bind()}
             className='flex justify-center items-center w-[800px] h-[800px] flex-col gap-5'
             style={{
-                transform: isActive ? '' : 'perspective(800px)',
-                rotateX,
-                rotateY,
-                rotateZ,
+                transform: 'perspective(800px)',
+                rotateX: isActive ? orientation.x : rotateX,
+                rotateY: isActive ? orientation.y : rotateY,
+                rotateZ: isActive ? 0 : rotateZ,
             }}
         >
             <Image
@@ -89,8 +91,8 @@ const Title = (props: Props) => {
                 onClick={() => setIsActive(!isActive)}
             />
             <div>
-                <p>x: {orientation.x.toFixed(4)}</p>
-                <p>y: {orientation.y.toFixed(4)}</p>
+                <p>x: {mousePosition.x.toFixed(4)}</p>
+                <p>y: {mousePosition.y.toFixed(4)}</p>
             </div>
         </animated.div>
     )
