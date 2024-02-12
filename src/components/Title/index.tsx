@@ -37,8 +37,8 @@ const Title = (props: Props) => {
             y = y / 2; // Adjusting the scale for better matching
 
             setOrientation({ x, y });
+            console.log('x', x.toFixed(4), 'y', y.toFixed(4));
         }
-
     }
 
     const [{ x, y, rotateX, rotateY, rotateZ, zoom, scale }, api] = useSpring(
@@ -91,8 +91,8 @@ const Title = (props: Props) => {
                 onClick={() => setIsActive(!isActive)}
             />
             <div>
-                <p>x: {mousePosition.x.toFixed(4)}</p>
-                <p>y: {mousePosition.y.toFixed(4)}</p>
+                <p>x: {orientation.x.toFixed(4)}</p>
+                <p>y: {orientation.y.toFixed(4)}</p>
             </div>
         </animated.div>
     )
