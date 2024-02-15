@@ -1,0 +1,17 @@
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.205);
+    backdrop-filter: blur(7.5px);
+    overflow: hidden;
+    position: relative;
+}
+
+.title-hover {
+    content: "";
+    position: absolute;
+    opacity: 0.4;
+    background: radial-gradient(white, #3984ff00 70%);
+}
