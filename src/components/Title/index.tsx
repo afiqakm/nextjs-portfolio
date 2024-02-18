@@ -6,17 +6,20 @@ import { useGesture, useHover, useMove } from "@use-gesture/react";
 import Icons from '../../assets/icons';
 import Image from "next/image";
 import "./styles.css";
+import { isMobile } from "react-device-detect";
 
 type Props = {};
 
-const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 20;
-const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 20;
+const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 10;
+const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 10;
+
+const calcMobileX = window.innerWidth / 8;
+const calcMobileY = window.innerHeight / 4;
 
 const Title = (props: Props) => {
-    const [isActive, setIsActive] = useState(false);
     const [orientation, setOrientation] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
     const [overlayPosition, setOverlayPosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-    // const [mousePosition, setMousePosition] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+    const [isDrag, setIsDrag] = useState<boolean>(false);
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
@@ -70,57 +73,77 @@ const Title = (props: Props) => {
     const bind = useGesture(
         {
             onMove({ xy: [px, py] }) {
-                !isActive && api.start({
-                    rotateX: calcX(py, y.get()),
-                    rotateY: calcY(px, x.get()),
+                !isMobile && api.start({
+                    rotateX: isDrag ? 0 : calcX(py, y.get()),
+                    rotateY: isDrag ? 0 : calcY(px, x.get()),
                 })
-                setPosition({ x: px - 1000, y: py - 500 });
+                setPosition({ x: px - 1050, y: py - 550 });
             },
             onHover: ({ hovering }) => {
-                (!isActive && !hovering) && api.start({
+                (!isMobile && !hovering) && api.start({
                     rotateX: 0,
                     rotateY: 0,
                 })
             },
+            onDrag: ({ down, offset: [ox, oy] }) => {
+                if (down) {
+                    setIsDrag(true);
+                } else {
+                    setIsDrag(false);
+                }
+                api.start({
+                    config: { duration: 200 },
+                    immediate: down,
+                    x: down ? ox : 0,
+                    y: down ? oy : 0,
+                });
+            },
         },
+        {
+            drag: {
+                from: () => [x.get(), 0],
+                bounds: {
+                    left: isMobile ? -calcMobileX : -200,
+                    right: isMobile ? calcMobileX : 200,
+                    top: isMobile ? -calcMobileY : -200,
+                    bottom: isMobile ? calcMobileY : 200
+                },
+            }
+        }
     )
 
-    // const pointer = useGesture({
-    //     onMove: ({ xy }) => {
-    //          setPosition({ x: xy[0] - 1000, y: xy[1] - 500 });
-    //     },
-    // });
 
     return (
-        <animated.div
-            {...bind()}
+        <div
             className='flex justify-center items-center w-[800px] h-[800px] flex-col gap-5'
-            style={{
-                transform: 'perspective(1000px)',
-                rotateX: isActive ? orientation.x : rotateX,
-                rotateY: isActive ? orientation.y : rotateY,
-                rotateZ: isActive ? 0 : rotateZ,
-            }}
         >
-            <div
-                // {...pointer()}
-                className="title w-[300px] h-[300px] md:w-[500px] md:h-[500px]"
+            <animated.div
+                {...bind()}
+                className="title w-[300px] h-[300px] md:w-[450px] md:h-[450px] cursor-grab"
+                style={{
+                    x,
+                    y,
+                    transform: 'perspective(1000px)',
+                    rotateX: isMobile ? orientation.x : rotateX,
+                    rotateY: isMobile ? orientation.y : rotateY,
+                    rotateZ: isMobile ? 0 : rotateZ,
+                }}
             >
                 <div
                     className="title-hover w-[400px] h-[400px] md:w-[600px] md:h-[600px]"
                     style={{
-                        top: isActive ? overlayPosition.y : position.y,
-                        left: isActive ? overlayPosition.x : position.x,
+                        top: isMobile ? overlayPosition.y : position.y,
+                        left: isMobile ? overlayPosition.x : position.x,
                     }}
                 />
                 <Image
                     src={Icons.logo}
                     alt="icons"
-                    className="w-[180px] h-[180px] md:w-[250px] md:h-[250px] object-contain cursor-pointer z-10"
-                    onClick={() => setIsActive(!isActive)}
+                    className="w-[180px] h-[180px] md:w-[250px] md:h-[250px] object-contain z-10"
+                    onDragStart={(e) => e.preventDefault()}
                 />
-            </div>
-        </animated.div>
+            </animated.div>
+        </div>
     )
 };
 
