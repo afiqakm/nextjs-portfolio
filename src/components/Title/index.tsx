@@ -13,8 +13,8 @@ type Props = {};
 const calcX = (y: number, ly: number) => -(y - ly - window.innerHeight / 2) / 10;
 const calcY = (x: number, lx: number) => (x - lx - window.innerWidth / 2) / 10;
 
-const calcMobileX = window.innerWidth / 8;
-const calcMobileY = window.innerHeight / 4;
+const calcMobileX = typeof window !== 'undefined' ? window.innerWidth / 8 : 0;
+const calcMobileY = typeof window !== 'undefined' ? window.innerHeight / 4 : 0;
 
 const Title = (props: Props) => {
     const [orientation, setOrientation] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
