@@ -1,0 +1,184 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "jest": true,
+        "node": true
+    },
+    "root": true,
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "airbnb",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:tailwindcss/recommended",
+        "next/core-web-vitals"
+    ],
+    "settings": {
+        "react": {
+            "version": "17.0.1"
+        },
+        "import/resolver": {
+            "node": {
+                "moduleDirectory": [
+                    "node_modules",
+                    "src/"
+                ],
+                "extensions": [
+                    ".js",
+                    ".jsx",
+                    ".ts",
+                    ".tsx"
+                ]
+            },
+            "babel-module": {}
+        },
+        "tailwindcss": {
+            "whitelist": [
+                "App"
+            ]
+        }
+    },
+    "plugins": [
+        "react",
+        "@typescript-eslint",
+        "simple-import-sort"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "rules": {
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": "error",
+        "react/prop-types": "off",
+        "import/no-anonymous-default-export": "off",
+        "react/display-name": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_"
+            }
+        ],
+        "class-methods-use-this": "off",
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": "error",
+        "max-len": "off",
+        "arrow-parens": "off",
+        "implicit-arrow-linebreak": "off",
+        "linebreak-style": 0,
+        "indent": [
+            1,
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "react/jsx-indent": [
+            1,
+            4
+        ],
+        "react/jsx-indent-props": [
+            1,
+            4
+        ],
+        "react/jsx-filename-extension": [
+            1,
+            {
+                "extensions": [
+                    ".js",
+                    ".jsx",
+                    ".ts",
+                    ".tsx"
+                ]
+            }
+        ],
+        "react/jsx-props-no-spreading": "off",
+        "object-curly-newline": [
+            2,
+            {
+                "consistent": true
+            }
+        ],
+        "jsx-quotes": [
+            1,
+            "prefer-single"
+        ],
+        "no-underscore-dangle": "off",
+        "arrow-body-style": "off",
+        "react/no-unused-state": "warn",
+        "import/no-extraneous-dependencies": [
+            1,
+            {
+                "devDependencies": true
+            }
+        ],
+        "import/no-cycle": "off",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "js": "never",
+                "jsx": "never",
+                "ts": "never",
+                "tsx": "never"
+            }
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "no-param-reassign": [
+            "error",
+            {
+                "props": false
+            }
+        ],
+        "react/function-component-definition": "off"
+    },
+    "overrides": [
+        {
+            "files": [
+                "*.ts",
+                "*.tsx"
+            ],
+            "rules": {
+                "@typescript-eslint/explicit-module-boundary-types": "error",
+                "simple-import-sort/imports": [
+                    "error",
+                    {
+                        "groups": [
+                            ["^react$","^\\u0000", "^node:"], // packages
+                            [""],
+                            ["^(config)(/.*|$)"],
+                            [""],
+                            ["^(containers)(/.*|$)", "^(components)(/.*|$)", "^(navigation)(/.*|$)", "^(layout)(/.*|$)"],
+                            [""],
+                            ["^(api)(/.*|$)", "^(redux)(/.*|$)", "^(sagas)(/.*|$)"],
+                            [""],
+                            ["^(lib)(/.*|$)", "^(entities)(/.*|$)", "^(lov)(/.*|$)"],
+                            [""],
+                            ["^(assets)(/.*|$)"],
+                            ["^.+\\.s?css$"],
+                            [""],
+                            ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"], // Imports starting with `./`
+                            ["^\\.\\.(?!/?$)", "^\\.\\./?$"] // Imports starting with `../`
+                        ]
+                    }
+                ]
+            },
+            "parser": "@typescript-eslint/parser"
+        }
+    ]
+}
